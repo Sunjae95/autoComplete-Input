@@ -1,17 +1,17 @@
 import { Result } from '../util/types';
 import { createDom } from '../util/index';
 
-interface ResultsState {
-  results: Result[];
-  isFocus: number;
-}
 interface ResultsProps {
   $target: HTMLElement;
   initialState: ResultsState;
 }
+interface ResultsState {
+  results: Result[];
+  isFocus: number;
+}
 class Results {
   state: ResultsState;
-  $result = createDom({ tag: 'ul', className: 'results' });
+  $result = createDom({ tag: 'ul', className: 'results disalbe' });
 
   constructor({ $target, initialState }: ResultsProps) {
     this.state = initialState;

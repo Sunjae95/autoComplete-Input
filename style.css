@@ -1,19 +1,49 @@
-.input {
-  background-color: #222326;
+#App {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.autoComplete {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px 8px 12px;
+  align-items: center;
+  background-color: rgb(34, 35, 38);
+  width: 337px;
+  height: 36px;
+  border-radius: 8px;
+}
+
+.autoComplete__input {
+  background-color: inherit;
   height: 20px;
   width: 257px;
   font-size: 15px;
+  color: #fff;
+}
+
+.autoComplete__clear-btn {
+  display: flex;
+  align-items: center;
+  color: rgb(132, 134, 141);
+}
+.autoComplete__clear-btn.disable {
+  display: none;
 }
 
 .results {
   width: 416px;
-  padding: 8px;
   border-radius: 5px;
   background-color: #141517;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .results__item {
   height: 50px;
+  margin: 8px;
   display: flex;
   align-items: center;
   padding-left: 16px;
@@ -22,4 +52,8 @@
 
 .results__item.isFocus {
   background-color: aqua;
+}
+
+.results.disable {
+  display: none;
 }

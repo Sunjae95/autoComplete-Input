@@ -1,24 +1,36 @@
 import { createDom } from '../util/index';
 
-interface AutoCompleteInputProps {
+interface InputProps {
   $target: HTMLElement;
+  content: string;
   handleInput: (e: KeyboardEvent) => void;
   switchFocus: (key: string) => void;
 }
 
-class AutoCompleteInput {
-  $input = createDom({ tag: 'input', className: 'input' });
+interface InputState {
+  content: string;
+}
 
-  constructor({ $target, handleInput, switchFocus }: AutoCompleteInputProps) {
+class Input {
+  $input = createDom({
+    tag: 'input',
+    className: 'autoComplete__input',
+  }) as HTMLInputElement;
+  state: InputState;
+
+  constructor({ $target, content, handleInput, switchFocus }: InputProps) {
+    this.state = { content };
     this.$input.setAttribute('type', 'text');
     this.$input.setAttribute('placeholder', '제목, 감독, 배우로 검색');
     this.$input.addEventListener('keydown', (e: KeyboardEvent) => {
-      console.log('keydownEvent');
+      console.log('keydownEvent', e.key);
       switch (e.key) {
         case 'ArrowUp':
-        case 'ArrowDown': {
+        case 'ArrowDown':
+        case 'Enter': {
           console.log('keydownEvent switchFocus');
           e.preventDefault();
+
           switchFocus(e.key);
           break;
         }
@@ -42,6 +54,15 @@ class AutoCompleteInput {
 
     $target.appendChild(this.$input);
   }
+
+  setState(nextState) {
+    this.state = nextState;
+    this.render();
+  }
+
+  render() {
+    this.$input.value = this.state.content;
+  }
 }
 
-export default AutoCompleteInput;
+export default Input;

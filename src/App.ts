@@ -1,4 +1,4 @@
-import AutoCompleteInput from './component/AutoCompleteInput';
+import AutoCompleteInput from './component/AutoComplete';
 import Results from './component/Results';
 import { Result } from './util/types';
 import { BASE_URL, getNextFocus } from './util/index';
@@ -11,7 +11,7 @@ interface AppState {
 
 class App {
   state: AppState;
-  input: AutoCompleteInput;
+  autoComplete: AutoCompleteInput;
   results: Results;
 
   constructor($target: HTMLElement) {
@@ -20,10 +20,13 @@ class App {
       isFocus: 0,
       results: [],
     };
-    this.input = new AutoCompleteInput({
+
+    this.autoComplete = new AutoCompleteInput({
       $target,
+      content: this.state.content,
       handleInput: this.handleInput.bind(this),
       switchFocus: this.switchFocus.bind(this),
+      clearInput: this.clearInput.bind(this),
     });
     this.results = new Results({
       $target,
@@ -40,6 +43,7 @@ class App {
   }
 
   render() {
+    this.autoComplete.setState({ content: this.state.content });
     this.results.setState({
       results: this.state.results,
       isFocus: this.state.isFocus,
@@ -65,6 +69,15 @@ class App {
     }
   }
 
+  clearInput(): void {
+    const nextState = {
+      content: '',
+      isFocus: 0,
+      results: [],
+    };
+    this.setState(nextState);
+  }
+
   switchFocus(key: string): void {
     const { isFocus, results } = this.state;
     const nextFocus = getNextFocus({
@@ -72,6 +85,9 @@ class App {
       nowFocus: isFocus,
       maxLength: results.length,
     });
+
+    if (nextFocus === null) return;
+
     const nextState = { ...this.state, isFocus: nextFocus };
 
     this.setState(nextState);
