@@ -20,6 +20,7 @@ class App {
   autoComplete: AutoCompleteInput;
   results: Results;
   timer = null;
+  history = new Map();
 
   constructor($target: HTMLElement) {
     this.autoComplete = new AutoCompleteInput({
@@ -77,9 +78,25 @@ class App {
       let nextState;
 
       try {
-        const res = await fetch(`${BASE_URL}${value}`);
-        const results: Result[] = await res.json();
-        nextState = { ...this.state, content: value, focusNumber: 0, results };
+        if (this.history.has(value)) {
+          const results = this.history.get(value);
+          nextState = {
+            ...this.state,
+            content: value,
+            focusNumber: 0,
+            results,
+          };
+        } else {
+          const res = await fetch(`${BASE_URL}${value}`);
+          const results: Result[] = await res.json();
+          this.history.set(value, results);
+          nextState = {
+            ...this.state,
+            content: value,
+            focusNumber: 0,
+            results,
+          };
+        }
       } catch {
         nextState = {
           ...this.state,
