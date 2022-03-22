@@ -1,3 +1,5 @@
-const $target = document.querySelector('#App');
+import App from './App';
 
-$target.innerHTML = `<div>Hello World<div>`;
+const $target: HTMLElement = document.querySelector('#App');
+
+new App($target);
