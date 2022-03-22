@@ -5,35 +5,38 @@ import { BASE_URL, getNextFocus } from './util/index';
 
 interface AppState {
   content: string;
-  isFocus: number;
+  focusNumber: number;
   results: Result[];
+  isFocus: boolean;
 }
 
 class App {
-  state: AppState;
+  state: AppState = {
+    content: '',
+    isFocus: true,
+    focusNumber: 0,
+    results: [],
+  };
   autoComplete: AutoCompleteInput;
   results: Results;
-  timer: number | null;
+  timer = null;
 
   constructor($target: HTMLElement) {
-    this.state = {
-      content: '',
-      isFocus: 0,
-      results: [],
-    };
-    this.timer = null;
     this.autoComplete = new AutoCompleteInput({
       $target,
       content: this.state.content,
       handleInput: this.handleInput.bind(this),
       switchFocus: this.switchFocus.bind(this),
       clearInput: this.clearInput.bind(this),
+      focusInput: this.focusInput.bind(this),
+      outFocusInput: this.outFocusInput.bind(this),
     });
     this.results = new Results({
       $target,
       initialState: {
-        results: this.state.results,
         isFocus: this.state.isFocus,
+        results: this.state.results,
+        focusNumber: this.state.focusNumber,
       },
     });
   }
@@ -46,8 +49,9 @@ class App {
   render() {
     this.autoComplete.setState({ content: this.state.content });
     this.results.setState({
-      results: this.state.results,
       isFocus: this.state.isFocus,
+      results: this.state.results,
+      focusNumber: this.state.focusNumber,
     });
   }
 
@@ -59,14 +63,30 @@ class App {
     }
 
     this.timer = setTimeout(async () => {
+      if (!value) {
+        this.setState({
+          ...this.state,
+          content: value,
+          focusNumber: 0,
+          results: [],
+        });
+
+        return;
+      }
+
       let nextState;
 
       try {
         const res = await fetch(`${BASE_URL}${value}`);
         const results: Result[] = await res.json();
-        nextState = { content: value, isFocus: 0, results };
+        nextState = { ...this.state, content: value, focusNumber: 0, results };
       } catch {
-        nextState = { content: value, isFocus: 0, results: [] };
+        nextState = {
+          ...this.state,
+          content: value,
+          focusNumber: 0,
+          results: [],
+        };
       }
 
       this.setState(nextState);
@@ -75,25 +95,36 @@ class App {
 
   clearInput(): void {
     const nextState = {
+      ...this.state,
       content: '',
-      isFocus: 0,
+      focusNumber: 0,
       results: [],
     };
     this.setState(nextState);
   }
 
   switchFocus(key: string): void {
-    const { isFocus, results } = this.state;
+    const { focusNumber, results } = this.state;
     const nextFocus = getNextFocus({
       key,
-      nowFocus: isFocus,
+      nowFocus: focusNumber,
       maxLength: results.length,
     });
 
     if (nextFocus === null) return;
 
-    const nextState = { ...this.state, isFocus: nextFocus };
+    const nextState = { ...this.state, focusNumber: nextFocus };
 
+    this.setState(nextState);
+  }
+
+  focusInput() {
+    const nextState = { ...this.state, isFocus: true };
+    this.setState(nextState);
+  }
+
+  outFocusInput() {
+    const nextState = { ...this.state, isFocus: false };
     this.setState(nextState);
   }
 }

@@ -5,6 +5,8 @@ interface InputProps {
   content: string;
   handleInput: (e: KeyboardEvent) => void;
   switchFocus: (key: string) => void;
+  focusInput: () => void;
+  outFocusInput: () => void;
 }
 
 interface InputState {
@@ -18,16 +20,20 @@ class Input {
   }) as HTMLInputElement;
   state: InputState = { content: '' };
 
-  constructor({ $target, handleInput, switchFocus }: InputProps) {
+  constructor({
+    $target,
+    handleInput,
+    switchFocus,
+    focusInput,
+    outFocusInput,
+  }: InputProps) {
     this.$input.setAttribute('type', 'text');
     this.$input.setAttribute('placeholder', '제목, 감독, 배우로 검색');
     this.$input.addEventListener('keydown', (e: KeyboardEvent) => {
-      console.log('keydownEvent', e.key);
       switch (e.key) {
         case 'ArrowUp':
         case 'ArrowDown':
         case 'Enter': {
-          console.log('keydownEvent switchFocus');
           e.preventDefault();
 
           switchFocus(e.key);
@@ -36,7 +42,6 @@ class Input {
       }
     });
     this.$input.addEventListener('keyup', (e: KeyboardEvent) => {
-      console.log('keyUpEvent');
       switch (e.key) {
         case 'ArrowUp':
         case 'ArrowRight':
@@ -45,11 +50,12 @@ class Input {
           return;
         }
         default: {
-          console.log('keyUpEvent handleInput');
           handleInput(e);
         }
       }
     });
+    this.$input.onfocus = focusInput;
+    this.$input.onblur = outFocusInput;
 
     $target.appendChild(this.$input);
   }
@@ -60,7 +66,9 @@ class Input {
   }
 
   render() {
-    this.$input.value = this.state.content;
+    if (!this.state.content) {
+      this.$input.value = '';
+    }
   }
 }
 

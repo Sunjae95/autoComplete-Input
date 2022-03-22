@@ -6,12 +6,13 @@ interface ResultsProps {
   initialState: ResultsState;
 }
 interface ResultsState {
+  isFocus: boolean;
   results: Result[];
-  isFocus: number;
+  focusNumber: number;
 }
 class Results {
   state: ResultsState;
-  $result = createDom({ tag: 'ul', className: 'results disalbe' });
+  $result = createDom({ tag: 'ul', className: 'results' });
 
   constructor({ $target, initialState }: ResultsProps) {
     this.state = initialState;
@@ -24,12 +25,21 @@ class Results {
   }
 
   render() {
+    if (this.state.isFocus && this.$result.classList.contains('disable')) {
+      this.$result.classList.remove('disable');
+    } else if (
+      !this.state.isFocus &&
+      !this.$result.classList.contains('disable')
+    ) {
+      this.$result.classList.add('disable');
+    }
+
     this.$result.innerHTML = `
         ${this.state.results
           .map(
             (result, i) =>
               `<li class="results__item ${
-                i === this.state.isFocus && 'isFocus'
+                i === this.state.focusNumber && 'isFocus'
               }"><span>${result.text}</span><li>`
           )
           .join('')}

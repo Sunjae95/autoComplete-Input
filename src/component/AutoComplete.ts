@@ -8,6 +8,8 @@ interface AutoCompleteProps {
   handleInput: (e: KeyboardEvent) => void;
   switchFocus: (key: string) => void;
   clearInput: () => void;
+  focusInput: () => void;
+  outFocusInput: () => void;
 }
 
 interface AutoCompleteState {
@@ -26,6 +28,8 @@ class AutoComplete {
     handleInput,
     switchFocus,
     clearInput,
+    focusInput,
+    outFocusInput,
   }: AutoCompleteProps) {
     this.state = { content };
     this.$input = new Input({
@@ -33,6 +37,8 @@ class AutoComplete {
       content,
       handleInput,
       switchFocus,
+      focusInput,
+      outFocusInput,
     });
     this.$clearBtn = new ClearBtn({
       $target: this.$form,

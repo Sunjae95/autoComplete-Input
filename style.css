@@ -1,5 +1,6 @@
 #App {
   position: absolute;
+  width: 500px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -19,7 +20,7 @@
 .autoComplete__input {
   background-color: inherit;
   height: 20px;
-  width: 257px;
+  width: 100%;
   font-size: 15px;
   color: #fff;
 }
@@ -34,6 +35,9 @@
 }
 
 .results {
+  position: absolute;
+  top: 125%;
+  left: 0;
   width: 416px;
   border-radius: 5px;
   background-color: #141517;
