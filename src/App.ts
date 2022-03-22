@@ -13,6 +13,7 @@ class App {
   state: AppState;
   autoComplete: AutoCompleteInput;
   results: Results;
+  timer: number | null;
 
   constructor($target: HTMLElement) {
     this.state = {
@@ -20,7 +21,7 @@ class App {
       isFocus: 0,
       results: [],
     };
-
+    this.timer = null;
     this.autoComplete = new AutoCompleteInput({
       $target,
       content: this.state.content,
@@ -50,23 +51,26 @@ class App {
     });
   }
 
-  async handleInput(e: KeyboardEvent): Promise<void> {
+  handleInput(e: KeyboardEvent) {
     const { value } = e.target as HTMLInputElement;
-    const nextContentState = { ...this.state, content: value };
 
-    this.setState(nextContentState);
-
-    const { content } = this.state;
-    try {
-      const res = await fetch(`${BASE_URL}${content}`);
-      const results: Result[] = await res.json();
-      const nextResults = { ...this.state, isFocus: 0, results };
-
-      this.setState(nextResults);
-    } catch {
-      const nextResults = { ...this.state, isFocus: 0, results: [] };
-      this.setState(nextResults);
+    if (this.timer !== null) {
+      clearTimeout(this.timer);
     }
+
+    this.timer = setTimeout(async () => {
+      let nextState;
+
+      try {
+        const res = await fetch(`${BASE_URL}${value}`);
+        const results: Result[] = await res.json();
+        nextState = { content: value, isFocus: 0, results };
+      } catch {
+        nextState = { content: value, isFocus: 0, results: [] };
+      }
+
+      this.setState(nextState);
+    }, 300);
   }
 
   clearInput(): void {

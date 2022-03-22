@@ -16,10 +16,9 @@ class Input {
     tag: 'input',
     className: 'autoComplete__input',
   }) as HTMLInputElement;
-  state: InputState;
+  state: InputState = { content: '' };
 
-  constructor({ $target, content, handleInput, switchFocus }: InputProps) {
-    this.state = { content };
+  constructor({ $target, handleInput, switchFocus }: InputProps) {
     this.$input.setAttribute('type', 'text');
     this.$input.setAttribute('placeholder', '제목, 감독, 배우로 검색');
     this.$input.addEventListener('keydown', (e: KeyboardEvent) => {
