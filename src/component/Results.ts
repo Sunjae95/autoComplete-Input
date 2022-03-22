@@ -1,30 +1,37 @@
 import { Result } from '../util/types';
 import { createDom } from '../util/index';
 
+interface ResultsState {
+  results: Result[];
+  isFocus: number;
+}
 interface ResultsProps {
   $target: HTMLElement;
-  results: Result[];
+  initialState: ResultsState;
 }
-
 class Results {
-  results: Result[];
+  state: ResultsState;
   $result = createDom({ tag: 'ul', className: 'results' });
 
-  constructor({ $target, results }: ResultsProps) {
-    this.results = results;
-
+  constructor({ $target, initialState }: ResultsProps) {
+    this.state = initialState;
     $target.appendChild(this.$result);
   }
 
-  setState(nextState: Result[]) {
-    this.results = nextState;
+  setState(nextState: ResultsState) {
+    this.state = nextState;
     this.render();
   }
 
   render() {
     this.$result.innerHTML = `
-        ${this.results
-          .map((result) => `<li>${result.text} ${result.id}<li>`)
+        ${this.state.results
+          .map(
+            (result, i) =>
+              `<li class="results__item ${
+                i === this.state.isFocus && 'isFocus'
+              }"><span>${result.text}</span><li>`
+          )
           .join('')}
       `;
   }
