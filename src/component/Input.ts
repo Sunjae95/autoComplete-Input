@@ -1,16 +1,12 @@
 import { createDom } from '../util/index';
+import { AutoCompleteState } from '../util/types';
 
-interface InputProps {
+interface InputProps extends AutoCompleteState {
   $target: HTMLElement;
-  content: string;
   handleInput: (e: KeyboardEvent) => void;
   switchFocus: (key: string) => void;
   focusInput: () => void;
   outFocusInput: () => void;
-}
-
-interface InputState {
-  content: string;
 }
 
 class Input {
@@ -18,7 +14,7 @@ class Input {
     tag: 'input',
     className: 'autoComplete__input',
   }) as HTMLInputElement;
-  state: InputState = { content: '' };
+  state: AutoCompleteState = { content: '' };
 
   constructor({
     $target,
@@ -35,7 +31,6 @@ class Input {
         case 'ArrowDown':
         case 'Enter': {
           e.preventDefault();
-
           switchFocus(e.key);
           break;
         }
@@ -60,7 +55,7 @@ class Input {
     $target.appendChild(this.$input);
   }
 
-  setState(nextState) {
+  setState(nextState: AutoCompleteState) {
     this.state = nextState;
     this.render();
   }

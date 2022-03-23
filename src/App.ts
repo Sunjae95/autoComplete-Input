@@ -1,14 +1,7 @@
 import AutoCompleteInput from './component/AutoComplete';
 import Results from './component/Results';
-import { Result } from './util/types';
+import { AppState, Result } from './util/types';
 import { BASE_URL, getNextFocus } from './util/index';
-
-interface AppState {
-  content: string;
-  focusNumber: number;
-  results: Result[];
-  isFocus: boolean;
-}
 
 class App {
   state: AppState = {
@@ -19,8 +12,8 @@ class App {
   };
   autoComplete: AutoCompleteInput;
   results: Results;
-  timer = null;
-  history = new Map();
+  timer: null | ReturnType<typeof setTimeout> = null;
+  history: Map<string, Result[]> = new Map();
 
   constructor($target: HTMLElement) {
     this.autoComplete = new AutoCompleteInput({
@@ -34,11 +27,9 @@ class App {
     });
     this.results = new Results({
       $target,
-      initialState: {
-        isFocus: this.state.isFocus,
-        results: this.state.results,
-        focusNumber: this.state.focusNumber,
-      },
+      isFocus: this.state.isFocus,
+      results: this.state.results,
+      focusNumber: this.state.focusNumber,
     });
   }
 
@@ -56,7 +47,7 @@ class App {
     });
   }
 
-  handleInput(e: KeyboardEvent) {
+  handleInput(e: KeyboardEvent): void {
     const { value } = e.target as HTMLInputElement;
 
     if (this.timer !== null) {
@@ -75,8 +66,7 @@ class App {
         return;
       }
 
-      let nextState;
-
+      let nextState: AppState;
       try {
         if (this.history.has(value)) {
           const results = this.history.get(value);
@@ -135,12 +125,12 @@ class App {
     this.setState(nextState);
   }
 
-  focusInput() {
+  focusInput(): void {
     const nextState = { ...this.state, isFocus: true };
     this.setState(nextState);
   }
 
-  outFocusInput() {
+  outFocusInput(): void {
     const nextState = { ...this.state, isFocus: false };
     this.setState(nextState);
   }

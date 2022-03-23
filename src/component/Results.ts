@@ -1,21 +1,15 @@
-import { Result } from '../util/types';
-import { createDom } from '../util/index';
+import { ResultsState } from '../util/types';
+import { createDom, DISABLE } from '../util/index';
 
-interface ResultsProps {
+interface ResultsProps extends ResultsState {
   $target: HTMLElement;
-  initialState: ResultsState;
-}
-interface ResultsState {
-  isFocus: boolean;
-  results: Result[];
-  focusNumber: number;
 }
 class Results {
   state: ResultsState;
   $result = createDom({ tag: 'ul', className: 'results' });
 
-  constructor({ $target, initialState }: ResultsProps) {
-    this.state = initialState;
+  constructor({ $target, isFocus, results, focusNumber }: ResultsProps) {
+    this.state = { isFocus, results, focusNumber };
     $target.appendChild(this.$result);
   }
 
@@ -25,13 +19,13 @@ class Results {
   }
 
   render() {
-    if (this.state.isFocus && this.$result.classList.contains('disable')) {
-      this.$result.classList.remove('disable');
+    if (this.state.isFocus && this.$result.classList.contains(DISABLE)) {
+      this.$result.classList.remove(DISABLE);
     } else if (
       !this.state.isFocus &&
-      !this.$result.classList.contains('disable')
+      !this.$result.classList.contains(DISABLE)
     ) {
-      this.$result.classList.add('disable');
+      this.$result.classList.add(DISABLE);
     }
 
     this.$result.innerHTML = `

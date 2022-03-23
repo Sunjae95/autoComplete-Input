@@ -1,19 +1,14 @@
 import { createDom } from '../util/index';
+import { AutoCompleteState } from '../util/types';
 import ClearBtn from './ClearBtn';
 import Input from './Input';
-
-interface AutoCompleteProps {
+interface AutoCompleteProps extends AutoCompleteState {
   $target: HTMLElement;
-  content: string;
   handleInput: (e: KeyboardEvent) => void;
   switchFocus: (key: string) => void;
   clearInput: () => void;
   focusInput: () => void;
   outFocusInput: () => void;
-}
-
-interface AutoCompleteState {
-  content: string;
 }
 
 class AutoComplete {
