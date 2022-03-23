@@ -1,5 +1,6 @@
 import { ResultsState } from '../util/types';
-import { createDom, DISABLE } from '../util/index';
+import { DISABLE } from '../util/constant';
+import { createDom } from '../util/function';
 
 interface ResultsProps extends ResultsState {
   $target: HTMLElement;

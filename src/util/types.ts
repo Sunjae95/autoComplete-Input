@@ -9,6 +9,24 @@ export interface AppState {
   isFocus: boolean;
 }
 
-export interface AutoCompleteState extends Pick<AppState, 'content'> {}
+export enum Direction {
+  ArrowUp = 'ArrowUp',
+  ArrowDown = 'ArrowDown',
+  ArrowLeft = 'ArrowLeft',
+  ArrowRight = 'ArrowRight',
+}
 
-export interface ResultsState extends Omit<AppState, 'content'> {}
+export type DomType = {
+  tag: string;
+  className: string;
+};
+
+export type NextFocusType = {
+  key: keyof typeof Direction;
+  nowFocus: number;
+  maxLength: number;
+};
+
+export type AutoCompleteState = Pick<AppState, 'content'>;
+
+export type ResultsState = Omit<AppState, 'content'>;

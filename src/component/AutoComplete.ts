@@ -1,4 +1,4 @@
-import { createDom } from '../util/index';
+import { createDom } from '../util/function';
 import { AutoCompleteState } from '../util/types';
 import ClearBtn from './ClearBtn';
 import Input from './Input';

@@ -1,4 +1,5 @@
-import { CLEAR_ICON, createDom, DISABLE } from '../util/index';
+import { CLEAR_ICON, DISABLE } from '../util/constant';
+import { createDom } from '../util/function';
 import { AutoCompleteState } from '../util/types';
 
 interface ClearBtnProps extends AutoCompleteState {

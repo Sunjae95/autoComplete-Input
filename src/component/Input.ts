@@ -1,5 +1,5 @@
-import { createDom } from '../util/index';
-import { AutoCompleteState } from '../util/types';
+import { createDom } from '../util/function';
+import { Direction, AutoCompleteState } from '../util/types';
 
 interface InputProps extends AutoCompleteState {
   $target: HTMLElement;
@@ -27,8 +27,8 @@ class Input {
     this.$input.setAttribute('placeholder', '제목, 감독, 배우로 검색');
     this.$input.addEventListener('keydown', (e: KeyboardEvent) => {
       switch (e.key) {
-        case 'ArrowUp':
-        case 'ArrowDown':
+        case Direction.ArrowUp:
+        case Direction.ArrowDown:
         case 'Enter': {
           e.preventDefault();
           switchFocus(e.key);
@@ -38,10 +38,11 @@ class Input {
     });
     this.$input.addEventListener('keyup', (e: KeyboardEvent) => {
       switch (e.key) {
-        case 'ArrowUp':
-        case 'ArrowRight':
-        case 'ArrowLeft':
-        case 'ArrowDown': {
+        case Direction.ArrowUp:
+        case Direction.ArrowDown:
+        case Direction.ArrowLeft:
+        case Direction.ArrowRight:
+        case 'Enter': {
           return;
         }
         default: {

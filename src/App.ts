@@ -1,7 +1,7 @@
 import AutoCompleteInput from './component/AutoComplete';
 import Results from './component/Results';
-import { AppState, Result } from './util/types';
-import { BASE_URL, getNextFocus } from './util/index';
+import { AppState, Direction } from './util/types';
+import { debounceInput, getNextFocus } from './util/function';
 
 class App {
   state: AppState = {
@@ -48,47 +48,7 @@ class App {
 
   handleInput(e: KeyboardEvent): void {
     const { value } = e.target as HTMLInputElement;
-
-    if (this.timer !== null) {
-      clearTimeout(this.timer);
-    }
-
-    this.timer = setTimeout(async () => {
-      if (!value) {
-        this.setState({
-          ...this.state,
-          content: value,
-          focusNumber: 0,
-          results: [],
-        });
-
-        return;
-      }
-
-      let nextState: AppState;
-      try {
-        const res = await fetch(`${BASE_URL}${value}`, {
-          cache: 'force-cache',
-        });
-        const results: Result[] = await res.json();
-
-        nextState = {
-          ...this.state,
-          content: value,
-          focusNumber: 0,
-          results,
-        };
-      } catch {
-        nextState = {
-          ...this.state,
-          content: value,
-          focusNumber: 0,
-          results: [],
-        };
-      }
-
-      this.setState(nextState);
-    }, 300);
+    debounceInput.call(this, value);
   }
 
   clearInput(): void {
@@ -101,18 +61,8 @@ class App {
     this.setState(nextState);
   }
 
-  switchFocus(key: string): void {
-    const { focusNumber, results } = this.state;
-    const nextFocus = getNextFocus({
-      key,
-      nowFocus: focusNumber,
-      maxLength: results.length,
-    });
-
-    if (nextFocus === null) return;
-
-    const nextState = { ...this.state, focusNumber: nextFocus };
-
+  switchFocus(key: Direction): void {
+    const nextState = getNextFocus.call(this, key);
     this.setState(nextState);
   }
 
