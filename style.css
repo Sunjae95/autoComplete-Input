@@ -55,7 +55,7 @@
 }
 
 .results__item.isFocus {
-  background-color: aqua;
+  background-color: rgb(110, 112, 119);
 }
 
 .results.disable {
